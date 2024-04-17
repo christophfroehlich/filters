@@ -17,7 +17,10 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(Boost REQUIRED COMPONENTS headers)
+find_package(Boost QUIET COMPONENTS headers)
+if(NOT Boost_headers_FOUND)
+  find_package(Boost REQUIRED)
+endif()
 
 ##############################################################################
 # Build

@@ -2,6 +2,13 @@
 Changelog for package filters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix the RHEL-9 build.
+* Fix CMake 3.18
+* Add a virtual definition of configure() in MultiChannelFilterBase.
+* Contributors: Chris Lalancette, Jonathan Binney, Ryan Friedman
+
 2.1.1 (2024-03-02)
 ------------------
 * Provide target based dependencies in cmake for filter_base and libraries.

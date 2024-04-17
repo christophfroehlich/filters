@@ -2,8 +2,8 @@
 Changelog for package filters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.1.2 (2024-04-17)
+------------------
 * Fix the RHEL-9 build.
 * Fix CMake 3.18
 * Add a virtual definition of configure() in MultiChannelFilterBase.

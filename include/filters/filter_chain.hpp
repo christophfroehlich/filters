@@ -78,7 +78,7 @@ load_chain_config(
   const std::string & param_prefix,
   const rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr & node_logger,
   const rclcpp::node_interfaces::NodeParametersInterface::SharedPtr & node_params,
-  std::vector<struct FoundFilter> & found_filters)
+  std::vector<struct FoundFilter> & found_filters, const bool read_only = true)
 {
   // TODO(sloretz) error if someone tries to do filter0
   const std::string norm_param_prefix = impl::normalize_param_prefix(param_prefix);
@@ -165,8 +165,8 @@ load_chain_config(
     // Redeclare 'name' and 'type' as read_only
     node_params->undeclare_parameter(name_desc.name);
     node_params->undeclare_parameter(type_desc.name);
-    name_desc.read_only = false;
-    type_desc.read_only = false;
+    name_desc.read_only = read_only;
+    type_desc.read_only = read_only;
     node_params->declare_parameter(
       name_desc.name, rclcpp::ParameterValue(found_filter.name), name_desc);
     node_params->declare_parameter(
@@ -255,7 +255,8 @@ public:
   bool configure(
     const std::string & param_prefix,
     const rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr & node_logger,
-    const rclcpp::node_interfaces::NodeParametersInterface::SharedPtr & node_params)
+    const rclcpp::node_interfaces::NodeParametersInterface::SharedPtr & node_params,
+    const bool read_only = true)
   {
     if (configured_) {
       RCLCPP_ERROR(logging_interface_->get_logger(), "Filter chain is already configured");
@@ -266,7 +267,7 @@ public:
 
     std::vector<struct impl::FoundFilter> found_filters;
     if (!impl::load_chain_config(
-        param_prefix, logging_interface_, params_interface_, found_filters))
+        param_prefix, logging_interface_, params_interface_, found_filters, read_only))
     {
       // Assume load_chain_config() console logged something sensible
       return false;
@@ -404,7 +405,8 @@ public:
     size_t number_of_channels,
     const std::string & param_prefix,
     const rclcpp::node_interfaces::NodeLoggingInterface::SharedPtr & node_logger,
-    const rclcpp::node_interfaces::NodeParametersInterface::SharedPtr & node_params)
+    const rclcpp::node_interfaces::NodeParametersInterface::SharedPtr & node_params,
+    const bool read_only = true)
   {
     if (configured_) {
       RCLCPP_ERROR(logging_interface_->get_logger(), "Filter chain is already configured");
@@ -415,7 +417,7 @@ public:
 
     std::vector<impl::FoundFilter> found_filters;
     if (!impl::load_chain_config(
-        param_prefix, logging_interface_, params_interface_, found_filters))
+        param_prefix, logging_interface_, params_interface_, found_filters, read_only))
     {
       // Assume load_chain_config() console logged something sensible
       return false;

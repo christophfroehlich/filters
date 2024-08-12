@@ -31,6 +31,8 @@
 #define FILTERS__FILTER_CHAIN_HPP_
 
 #include <algorithm>
+#include <rcl_interfaces/msg/detail/parameter_descriptor__struct.hpp>
+#include <rclcpp/parameter_value.hpp>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -55,6 +57,18 @@ struct FoundFilter
   std::string type;
   std::string param_prefix;
 };
+
+
+inline rclcpp::Parameter auto_declare(
+  const rclcpp::node_interfaces::NodeParametersInterface::SharedPtr & param_itf,
+  const rcl_interfaces::msg::ParameterDescriptor& param_desc) {
+  if (!param_itf->has_parameter(param_desc.name))
+  {
+    //param_itf->declare_parameter(param_desc.name, default_value);
+    param_itf->declare_parameter(param_desc.name, rclcpp::ParameterValue(), param_desc);
+  }
+  return param_itf->get_parameter(param_desc.name);
+}
 
 /**
  * \brief Read params and figure out what filters to load
@@ -90,13 +104,10 @@ load_chain_config(
     // it read-only, but statically typed params cannot be undeclared.
     type_desc.dynamic_typing = true;
 
-    node_params->declare_parameter(
-      name_desc.name, rclcpp::ParameterValue(), name_desc);
-    node_params->declare_parameter(
-      type_desc.name, rclcpp::ParameterValue(), type_desc);
-
     rclcpp::Parameter param_name;
     rclcpp::Parameter param_type;
+    param_name = auto_declare(node_params, name_desc);
+    param_type = auto_declare(node_params, type_desc);
 
     const bool got_name = node_params->get_parameter(name_desc.name, param_name);
     const bool got_type = node_params->get_parameter(type_desc.name, param_type);
@@ -154,12 +165,13 @@ load_chain_config(
     // Redeclare 'name' and 'type' as read_only
     node_params->undeclare_parameter(name_desc.name);
     node_params->undeclare_parameter(type_desc.name);
-    name_desc.read_only = true;
-    type_desc.read_only = true;
+    name_desc.read_only = false;
+    type_desc.read_only = false;
     node_params->declare_parameter(
       name_desc.name, rclcpp::ParameterValue(found_filter.name), name_desc);
     node_params->declare_parameter(
       type_desc.name, rclcpp::ParameterValue(found_filter.type), type_desc);
+  
   }
   return true;
 }

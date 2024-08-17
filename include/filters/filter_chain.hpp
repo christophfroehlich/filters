@@ -75,21 +75,23 @@ inline bool auto_declare_string(
   rclcpp::ParameterValue param_value;
   try {
     param_value = node_params->declare_parameter(
-        param_desc.name, rclcpp::ParameterType::PARAMETER_STRING, param_desc);
+      param_desc.name, rclcpp::ParameterType::PARAMETER_STRING, param_desc);
   } catch (rclcpp::exceptions::ParameterAlreadyDeclaredException &) {
     rclcpp::Parameter param = node_params->get_parameter(param_name);
     param_value = param.get_parameter_value();
   } catch (rclcpp::exceptions::InvalidParametersException &) {
-    RCLCPP_ERROR(node_logger->get_logger(), "Tried to declare param with invalid name: %s",
-          param_name.c_str());
+    RCLCPP_ERROR(
+      node_logger->get_logger(), "Tried to declare param with invalid name: %s",
+      param_name.c_str());
     return false;
   }
 
   try {
     param_out = param_value.get<std::string>();
   } catch (rclcpp::exceptions::InvalidParameterTypeException &) {
-    RCLCPP_ERROR(node_logger->get_logger(), "Parameter %s of invalid type (must be a string)",
-          param_name.c_str());
+    RCLCPP_ERROR(
+      node_logger->get_logger(), "Parameter %s of invalid type (must be a string)",
+      param_name.c_str());
     return false;
   }
   return true;
@@ -125,17 +127,18 @@ load_chain_config(
     }
 
     std::string filter_name;
-    if(!auto_declare_string(node_logger, node_params, name_of_name_param, filter_name)) {
+    if (!auto_declare_string(node_logger, node_params, name_of_name_param, filter_name)) {
       return false;
     }
 
     std::string filter_type;
-    if(!auto_declare_string(node_logger, node_params, name_of_type_param, filter_type)) {
+    if (!auto_declare_string(node_logger, node_params, name_of_type_param, filter_type)) {
       return false;
     }
 
-    if (std::find_if(found_filters.begin(), found_filters.end(),
-      [&](const FoundFilter & f) {return  f.name == filter_name;}) != found_filters.end())
+    if (std::find_if(
+        found_filters.begin(), found_filters.end(),
+        [&](const FoundFilter & f) {return f.name == filter_name;}) != found_filters.end())
     {
       RCLCPP_FATAL(
         node_logger->get_logger(),

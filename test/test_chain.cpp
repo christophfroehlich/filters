@@ -122,9 +122,11 @@ TEST_F(ChainTest, configuring) {
 TEST_F(ChainTest, ParallelChainConfiguring) {
   double epsilon = 1e-9;
   std::vector<rclcpp::Parameter> overrides;
-  overrides.emplace_back("ParallelChainMeanFilter.filter1.name",
+  overrides.emplace_back(
+    "ParallelChainMeanFilter.filter1.name",
     std::string("parallel_chain_test"));
-  overrides.emplace_back("ParallelChainMeanFilter.filter1.type",
+  overrides.emplace_back(
+    "ParallelChainMeanFilter.filter1.type",
     std::string("filters/MeanFilterFloat"));
   overrides.emplace_back("ParallelChainMeanFilter.filter1.params.number_of_observations", 5);
   auto node = make_node_with_params(overrides);
@@ -133,14 +135,14 @@ TEST_F(ChainTest, ParallelChainConfiguring) {
     std::make_shared<filters::FilterChain<float>>("float"),
     std::make_shared<filters::FilterChain<float>>("float")};
 
-  for(auto & chain : chains) {
+  for (auto & chain : chains) {
     ASSERT_TRUE(
-        chain->configure(
-            "ParallelChainMeanFilter", node->get_node_logging_interface(),
-            node->get_node_parameters_interface()));
+      chain->configure(
+        "ParallelChainMeanFilter", node->get_node_logging_interface(),
+        node->get_node_parameters_interface()));
   }
 
-  for(auto & chain : chains) {
+  for (auto & chain : chains) {
     float v1 = 1.;
     float v1a = 9.;
 

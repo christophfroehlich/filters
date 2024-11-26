@@ -23,10 +23,6 @@ if(WIN32)
   set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 
-if(POLICY CMP0175)
-  cmake_policy(SET CMP0175 NEW)
-endif()
-
 ##############################################################################
 # Find dependencies
 ##############################################################################
